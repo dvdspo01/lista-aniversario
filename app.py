@@ -333,6 +333,7 @@ if pagina == "Evento":
 # ==========================================
 # ADMIN
 # ==========================================
+
 if pagina == "Administração":
 
     st.title("🔒 Administração")
@@ -373,6 +374,7 @@ if pagina == "Administração":
         df = carregar_dashboard()
 
         participantes_df = carregar_participantes()
+
         menor_5 = len(
             participantes_df[
                 participantes_df["faixa"] == "Menor de 5 anos"
@@ -391,8 +393,6 @@ if pagina == "Administração":
             ]
         )
 
-        # RESTANTE DO DASHBOARD ADMIN AQUI
-        
         total_convidados = len(participantes_df)
 
         total_confirmacoes = len(df)
@@ -406,12 +406,12 @@ if pagina == "Administração":
 
         c2.metric(
             "Menores de 5",
-             menor_5
+            menor_5
         )
 
         c3.metric(
             "De 5 a 12",
-             entre_5_12
+            entre_5_12
         )
 
         c4.metric(
@@ -421,7 +421,7 @@ if pagina == "Administração":
 
         c5.metric(
             "Total",
-            len(participantes_df)
+            total_convidados
         )
 
         st.divider()
@@ -430,22 +430,26 @@ if pagina == "Administração":
 
         st.success(
             f"""
-    🎈 Total Convidados: {total_convidados}
+🎈 Total Convidados: {total_convidados}
 
-    🎈 Menores de 5: {menor_5}
+👶 Menores de 5 anos: {menor_5}
 
-    🎈 De 5 a 12: {entre_5_12}
+🧒 De 5 a 12 anos: {entre_5_12}
 
-    🎈 Maiores de 12: {maior_12}
+🧑 Maiores de 12 anos: {maior_12}
 
-    ✅ Confirmações: {total_confirmacoes}
-    """
+✅ Confirmações: {total_confirmacoes}
+"""
         )
 
         st.divider()
 
         grafico_df = pd.DataFrame({
-            "Tipo": ["Menores de 5", "De 5 a 12", "Maiores de 12"],
+            "Faixa": [
+                "Menores de 5",
+                "De 5 a 12",
+                "Maiores de 12"
+            ],
             "Quantidade": [
                 menor_5,
                 entre_5_12,
@@ -455,7 +459,7 @@ if pagina == "Administração":
 
         fig = px.pie(
             grafico_df,
-            names="Tipo",
+            names="Faixa",
             values="Quantidade",
             title="Distribuição dos Convidados"
         )
@@ -511,4 +515,41 @@ if pagina == "Administração":
             st.dataframe(
                 filtro,
                 use_container_width=True
+            )
+
+        st.divider()
+
+        st.subheader("📥 Backup")
+
+        output = io.BytesIO()
+
+        with pd.ExcelWriter(
+            output,
+            engine="openpyxl"
+        ) as writer:
+
+            participantes_df.to_excel(
+                writer,
+                sheet_name="Participantes",
+                index=False
+            )
+
+            df.to_excel(
+                writer,
+                sheet_name="Confirmacoes",
+                index=False
+            )
+
+        st.download_button(
+            "📊 Baixar Excel",
+            output.getvalue(),
+            "backup_evento.xlsx"
+        )
+
+        with open("evento.db", "rb") as f:
+
+            st.download_button(
+                "🗄️ Baixar Banco SQLite",
+                data=f,
+                file_name="evento.db"
             )
