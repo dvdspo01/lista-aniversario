@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 # ==========================================
 
 st.set_page_config(
-    page_title="RSVP Evento",
+    page_title="Aniversário Marina e Vitória",
     page_icon="🎉",
     layout="wide"
 )
