@@ -5,6 +5,9 @@ import plotly.express as px
 from datetime import datetime
 import io
 
+import os
+from dotenv import load_dotenv
+
 # ==========================================
 # CONFIGURAÇÕES
 # ==========================================
