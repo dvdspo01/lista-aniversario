@@ -53,13 +53,9 @@ st.markdown("""
 }
 
 /* Texto geral */
-.stApp,
-.stApp p,
-.stApp div,
-.stApp span,
-.stApp label,
-.stMarkdown,
-.stText {
+p,
+span,
+label {
     color: #333333 !important;
 }
 
@@ -137,6 +133,36 @@ textarea {
 /* Alertas */
 [data-testid="stAlert"] {
     color: #333333 !important;
+}
+
+/* Esconde header inteiro */
+header {
+    visibility: hidden;
+}
+
+/* Esconde toolbar */
+[data-testid="stToolbar"] {
+    display: none;
+}
+
+/* Esconde botão Deploy */
+[data-testid="stDeployButton"] {
+    display: none;
+}
+
+/* Esconde menu superior */
+#MainMenu {
+    visibility: hidden;
+}
+
+/* Esconde footer */
+footer {
+    visibility: hidden;
+}
+
+/* Esconde decoração do Streamlit */
+[data-testid="stDecoration"] {
+    display: none;
 }
 
 </style>
@@ -260,18 +286,14 @@ pagina = st.sidebar.radio(
 if pagina == "Evento":
 
     #st.title("🎉 ANIVERSÁRIO MARINA E VITÓRIA")
-    st.markdown("""
-    <h1 style="
-    text-align:center;
-    color:#C2185B;
-    font-size:42px;
-    margin-bottom:20px;
-    ">
-
-    🎉 ANIVERSÁRIO MARINA E VITÓRIA 🎉
-
-    </h1>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        """
+        <h1 style="text-align:center;color:#C2185B;font-size:42px;font-weight:bold;">
+        🎉 ANIVERSÁRIO MARINA E VITÓRIA 🎉
+        </h1>
+        """,
+        unsafe_allow_html=True
+    )
 
     # FOTO + INFORMAÇÕES
     col_foto, col_info = st.columns([1, 2])
@@ -326,17 +348,14 @@ if pagina == "Evento":
         st.divider()
 
         #st.subheader("✅ Confirmação de Presença")
-        st.markdown("""
-        <h3 style="
-        text-align:center;
-        color:#AD1457;
-        margin-top:20px;
-        ">
-
-        ✅ Confirmação de Presença
-
-        </h3>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            """
+            <h2 style="text-align:center;color:#C2185B;font-weight:bold;">
+            ✅ Confirmação de Presença
+            </h2>
+            """,
+            unsafe_allow_html=True
+        )
 
 
         responsavel = st.text_input(
