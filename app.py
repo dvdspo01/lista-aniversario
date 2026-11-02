@@ -42,42 +42,94 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-.stApp{
-    background-color:#FCE4EC;
+/* Fundo principal */
+.stApp {
+    background-color: #FCE4EC;
 }
 
 /* Sidebar */
-[data-testid="stSidebar"]{
-    background-color:#F8BBD0;
+[data-testid="stSidebar"] {
+    background-color: #F8BBD0;
 }
 
-/* Força texto escuro */
+/* Texto geral */
 .stApp,
 .stApp p,
-.stApp label,
+.stApp div,
 .stApp span,
-.stApp div {
-    color:#333333;
+.stApp label,
+.stMarkdown,
+.stText {
+    color: #333333 !important;
 }
 
-/* Força títulos */
+/* Títulos HTML */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-    color:#C2185B !important;
+    color: #C2185B !important;
 }
 
-/* Subheaders do Streamlit */
+/* Títulos do Streamlit */
 [data-testid="stHeading"] {
-    color:#C2185B !important;
+    color: #C2185B !important;
 }
 
-/* Labels dos inputs */
+/* Labels dos campos */
 [data-testid="stWidgetLabel"] {
-    color:#333333 !important;
+    color: #333333 !important;
+}
+
+/* Inputs */
+input,
+textarea {
+    color: #333333 !important;
+}
+
+/* Rádio */
+[data-baseweb="radio"] label {
+    color: #333333 !important;
+}
+
+/* Selects */
+[data-baseweb="select"] * {
+    color: #333333 !important;
+}
+
+/* Botões */
+.stButton button {
+    background-color: #C2185B;
+    color: white;
+    border-radius: 12px;
+    border: none;
+}
+
+/* Métricas */
+[data-testid="stMetric"] {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+[data-testid="stMetricValue"] {
+    color: #333333 !important;
+}
+
+[data-testid="stMetricLabel"] {
+    color: #333333 !important;
+}
+
+/* Dataframes */
+[data-testid="stDataFrame"] {
+    background-color: white;
+}
+
+/* Alertas */
+[data-testid="stAlert"] {
+    color: #333333 !important;
 }
 
 </style>
@@ -200,33 +252,62 @@ pagina = st.sidebar.radio(
 
 if pagina == "Evento":
 
-    st.title("🎉 ANIVERSÁRIO MARINA E VITÓRIA")
+    #st.title("🎉 ANIVERSÁRIO MARINA E VITÓRIA")
+    st.markdown("""
+    <h1 style="
+    text-align:center;
+    color:#C2185B;
+    font-size:42px;
+    margin-bottom:20px;
+    ">
+
+    🎉 ANIVERSÁRIO MARINA E VITÓRIA 🎉
+
+    </h1>
+    """, unsafe_allow_html=True)
 
     # FOTO + INFORMAÇÕES
     col_foto, col_info = st.columns([1, 2])
 
     with col_foto:
-        st.image(
-            "images/foto_capa.png",
-            width=200
-        )
+
+        _, centro, _ = st.columns([1, 2, 1])
+
+        with centro:
+
+            st.image(
+                "images/foto_capa.png",
+                width=400
+            )
 
     with col_info:
 
-        st.markdown("## 💖 Nossa Festa")
+        st.markdown("""
+        <h2 style="
+        color:#C2185B;
+        margin-bottom:10px;
+        ">
+        💖 Nossa Festa
+        </h2>
+        """, unsafe_allow_html=True)
 
         st.markdown("""
-        ### Informações do Evento
+        <div style="
+        font-size:18px;
+        color:#333333;
+        line-height:1.8;
+        ">
 
-        📅 **Data:** 20/11/2026
+        <b>📅 Data:</b> 20/11/2026<br>
 
-        🕗 **Horário:** 16h
+        <b>🕗 Horário:</b> 16h<br>
 
-        📍 **Local:** Rua Carijós, 906 - Vila Alzira
+        <b>📍 Local:</b> Rua Carijós, 906 - Vila Alzira<br>
 
-        🍽️ **Aniversário Marina e Vitória**
-        """)
+        <b>🍽️ Evento:</b> Aniversário Marina e Vitória
 
+        </div>
+        """, unsafe_allow_html=True)
     # Espaçamento
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -237,7 +318,19 @@ if pagina == "Evento":
 
         st.divider()
 
-        st.subheader("✅ Confirmação de Presença")
+        #st.subheader("✅ Confirmação de Presença")
+        st.markdown("""
+        <h3 style="
+        text-align:center;
+        color:#AD1457;
+        margin-top:20px;
+        ">
+
+        ✅ Confirmação de Presença
+
+        </h3>
+        """, unsafe_allow_html=True)
+
 
         responsavel = st.text_input(
             "Nome do responsável"
