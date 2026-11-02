@@ -46,23 +46,38 @@ st.markdown("""
     background-color:#FCE4EC;
 }
 
-.stMarkdown,
-.stText,
-p,
-label {
+/* Sidebar */
+[data-testid="stSidebar"]{
+    background-color:#F8BBD0;
+}
+
+/* Força texto escuro */
+.stApp,
+.stApp p,
+.stApp label,
+.stApp span,
+.stApp div {
     color:#333333;
 }
 
-h1{
-    color:#C2185B;
+/* Força títulos */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color:#C2185B !important;
 }
 
-h2,h3,h4{
-    color:#AD1457;
+/* Subheaders do Streamlit */
+[data-testid="stHeading"] {
+    color:#C2185B !important;
 }
 
-[data-testid="stSidebar"]{
-    background-color:#F8BBD0;
+/* Labels dos inputs */
+[data-testid="stWidgetLabel"] {
+    color:#333333 !important;
 }
 
 </style>
