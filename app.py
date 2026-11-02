@@ -100,11 +100,18 @@ textarea {
 }
 
 /* Botões */
-.stButton button {
-    background-color: #C2185B;
-    color: white;
-    border-radius: 12px;
-    border: none;
+
+.stButton > button {
+    background-color: #AD1457 !important;
+    color: white !important;
+    font-weight: bold !important;
+    border-radius: 12px !important;
+    border: none !important;
+}
+
+/* Texto interno do botão */
+.stButton > button * {
+    color: white !important;
 }
 
 /* Métricas */
