@@ -38,6 +38,7 @@ st.set_page_config(
     page_icon="🎉",
     layout="wide"
 )
+
 st.markdown("""
 <style>
 
@@ -45,11 +46,18 @@ st.markdown("""
     background-color:#FCE4EC;
 }
 
+.stMarkdown,
+.stText,
+p,
+label {
+    color:#333333;
+}
+
 h1{
     color:#C2185B;
 }
 
-h2,h3{
+h2,h3,h4{
     color:#AD1457;
 }
 
