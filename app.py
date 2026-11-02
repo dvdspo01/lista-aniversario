@@ -150,10 +150,7 @@ header {
     display: none;
 }
 
-/* Esconde menu superior */
-#MainMenu {
-    visibility: hidden;
-}
+
 
 /* Esconde footer */
 footer {
