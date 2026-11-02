@@ -1,12 +1,33 @@
 import streamlit as st
-import sqlite3
 import pandas as pd
 import plotly.express as px
 from datetime import datetime
-import io
-
-import os
+import io, os
+import json, gspread    
+from google.oauth2.service_account import Credentials
 from dotenv import load_dotenv
+
+
+
+@st.cache_resource
+def conectar_planilha():
+
+    creds = Credentials.from_service_account_info(
+        dict(st.secrets["gcp_service_account"]),
+        scopes=[
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive"
+        ]
+    )
+
+    client = gspread.authorize(creds)
+
+    return client.open(
+        "RSVP Marina e Vitória"
+    ).worksheet(
+        "Confirmacoes"
+    )
+
 
 # ==========================================
 # CONFIGURAÇÕES
@@ -51,40 +72,6 @@ ADMIN_SENHA = os.getenv("ADMIN_PASSWORD")
 
 
 
-DB = "evento.db"
-
-# ==========================================
-# BANCO
-# ==========================================
-
-def conectar():
-    return sqlite3.connect(DB, check_same_thread=False)
-
-conn = conectar()
-cursor = conn.cursor()
-
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS confirmacoes(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    data_confirmacao TEXT,
-    responsavel TEXT,
-    presenca TEXT
-)
-""")
-
-
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS participantes(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    confirmacao_id INTEGER,
-    nome TEXT,
-    faixa TEXT,
-    FOREIGN KEY(confirmacao_id)
-    REFERENCES confirmacoes(id)
-)
-""")
-
-conn.commit()
 
 
 # ==========================================
@@ -97,41 +84,25 @@ def salvar_confirmacao(
         participantes
 ):
 
-    cursor.execute("""
-        INSERT INTO confirmacoes
-        (
-            data_confirmacao,
-            responsavel,
-            presenca
-        )
-        VALUES (?,?,?)
-    """,
-    (
-        datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-        responsavel,
-        presenca
-    ))
+    sheet = conectar_planilha()
 
-    confirmacao_id = cursor.lastrowid
+    data = datetime.now().strftime(
+        "%d/%m/%Y %H:%M:%S"
+    )
+
+    linhas = []
 
     for participante in participantes:
 
-        cursor.execute("""
-            INSERT INTO participantes
-            (
-                confirmacao_id,
-                nome,
-                faixa
-            )
-            VALUES (?,?,?)
-        """,
-        (
-            confirmacao_id,
+        linhas.append([
+            data,
+            responsavel,
+            presenca,
             participante["nome"],
             participante["faixa"]
-        ))
+        ])
 
-    conn.commit()
+    sheet.append_rows(linhas)
 
 
 def total_participantes_confirmados():
@@ -149,38 +120,44 @@ def total_participantes_confirmados():
 
 def carregar_dashboard():
 
-    query = """
-    SELECT
-        c.id,
-        c.data_confirmacao,
-        c.responsavel,
-        c.presenca,
-        COUNT(p.id) quantidade
-    FROM confirmacoes c
-    LEFT JOIN participantes p
-    ON p.confirmacao_id=c.id
-    GROUP BY c.id
-    """
+    participantes_df = carregar_participantes()
 
-    return pd.read_sql(query, conn)
+    if participantes_df.empty:
+        return pd.DataFrame()
+
+    return (
+        participantes_df
+        .groupby(
+            [
+                "responsavel",
+                "presenca",
+                "data"
+            ]
+        )
+        .size()
+        .reset_index(name="quantidade")
+    )
 
 
 def carregar_participantes():
 
-    query = """
-    SELECT
-        c.responsavel,
-        p.nome,
-        p.faixa,
-        c.presenca,
-        c.data_confirmacao
-    FROM participantes p
-    INNER JOIN confirmacoes c
-    ON p.confirmacao_id = c.id
-    ORDER BY p.nome
-    """
+    sheet = conectar_planilha()
 
-    return pd.read_sql(query, conn)
+    dados = sheet.get_all_records()
+
+    if not dados:
+
+        return pd.DataFrame(
+            columns=[
+                "data",
+                "responsavel",
+                "presenca",
+                "nome",
+                "faixa"
+            ]
+        )
+
+    return pd.DataFrame(dados)
 
 # ==========================================
 # MENU
@@ -329,6 +306,14 @@ if pagina == "Evento":
                 st.success(
                     "Sua confirmação foi registrada com sucesso! 🎉"
                 )
+                st.balloons()
+
+                st.markdown("""
+                ## 💖 Obrigado pela confirmação!
+
+                Estamos ansiosas para comemorar com você!
+                🎂🎈🎉
+                """)
 
 # ==========================================
 # ADMIN
@@ -480,7 +465,7 @@ if pagina == "Administração":
                     "nome",
                     "faixa",
                     "presenca",
-                    "data_confirmacao"
+                    "data"
                 ]
             ],
             use_container_width=True
@@ -545,11 +530,3 @@ if pagina == "Administração":
             output.getvalue(),
             "backup_evento.xlsx"
         )
-
-        with open("evento.db", "rb") as f:
-
-            st.download_button(
-                "🗄️ Baixar Banco SQLite",
-                data=f,
-                file_name="evento.db"
-            )
