@@ -361,9 +361,9 @@ if pagina == "Evento":
         faixa_responsavel = st.selectbox(
             "Faixa etária do responsável",
             [
-                "Menor de 5 anos",
-                "Entre 5 e 12 anos",
-                "Maior de 12 anos"
+                "Menor de 6 anos",
+                "Entre 6 e 10 anos",
+                "Maior de 11 anos"
             ]
         )
 
@@ -406,9 +406,9 @@ if pagina == "Evento":
                 faixa = st.selectbox(
                     "Faixa etária",
                     [
-                        "Menor de 5 anos",
-                        "Entre 5 e 12 anos",
-                        "Maior de 12 anos"
+                        "Menor de 6 anos",
+                        "Entre 6 e 10 anos",
+                        "Maior de 11 anos"
                     ],
                     key=f"faixa_{i}"
                 )
@@ -501,19 +501,19 @@ if pagina == "Administração":
 
         menor_5 = len(
             participantes_df[
-                participantes_df["faixa"] == "Menor de 5 anos"
+                participantes_df["faixa"] == "Menor de 6 anos"
             ]
         )
 
         entre_5_12 = len(
             participantes_df[
-                participantes_df["faixa"] == "Entre 5 e 12 anos"
+                participantes_df["faixa"] == "Entre 6 e 10 anos"
             ]
         )
 
         maior_12 = len(
             participantes_df[
-                participantes_df["faixa"] == "Maior de 12 anos"
+                participantes_df["faixa"] == "Maior de 11 anos"
             ]
         )
 
